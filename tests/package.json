@@ -1,0 +1,11 @@
+{
+  "name": "15-60-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test core.test.mjs notifications.test.mjs contracts.test.mjs archive.test.mjs",
+    "test:browser": "node browser-smoke.mjs",
+    "test:update": "node update-migration.mjs",
+    "test:adversarial": "node adversarial-qa.mjs"
+  }
+}

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en" data-clear60-app data-app-shell="20260805t">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" id="theme-color" content="#f4f1e9">
+  <meta name="description" content="15:60 — learn for fifteen minutes, then say it in sixty seconds.">
+  <title>15:60 — learn it, say it</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="15:60">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <script>
+    window.__clear60InstallPrompt = null;
+    addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      window.__clear60InstallPrompt = event;
+      dispatchEvent(new CustomEvent('clear60-install-ready'));
+    });
+  </script>
+  <link rel="preload" href="fonts/dm-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/dm-mono-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to practice</a>
+
+  <header class="appbar">
+    <button class="brand" type="button" data-nav="today" aria-label="15:60, today's practice">
+      <svg class="logo-doodle" viewBox="0 0 112 42" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 13.5c3.3-1.6 6.3-3.8 8.7-6.5-.4 8.7-.2 18.2.3 27.2M26.8 7.8c-2.3.1-5.8.3-8.3.8l-.8 10.7c2-1.5 4-2.1 6.2-1.8 4.4.6 6.2 4.3 5.3 8.8-.9 4.3-4 7-8.2 7.1-2.2 0-4.1-.7-5.4-1.9M39.4 14.2l.2.1m-.1 13.2.2.1M60.8 7.5c-7.2 3.5-10.4 10.2-10.1 17.2.3 6.2 3.4 9.4 7.8 8.8 4.5-.5 7-4.3 6.4-8.7-.6-4.3-3.3-6.6-6.9-6.2-2.9.3-5.2 2-6.7 4.3M83.8 8.1c-5.5-.8-9.4 3.5-10.2 11.9-.9 8.8 2.1 13.4 7.6 13.7 5.2.2 8.1-4.2 8-12.8-.1-8.2-1.6-11.9-5.4-12.8Z" stroke-width="2.35"/>
+        <path d="M3.8 37c21.2-1.2 63.7 1.1 88.5-.6" stroke-width="1.15" opacity=".48"/>
+      </svg>
+    </button>
+    <nav aria-label="Primary navigation">
+      <button class="nav-button active" type="button" data-nav="today" aria-current="page">Today</button>
+      <button class="nav-button" type="button" data-nav="streaks">Streaks <span id="streak-nav-count" class="count" hidden>0</span></button>
+      <button class="icon-button" id="settings-button" type="button" aria-label="Open settings" title="Settings">
+        <svg class="doodle-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 9.1c5.8-.4 15.6-.2 22 .3M11 5.4c-.3 2.4-.1 5.5.2 7.4M5.1 16.1c6.2-.3 15.5-.1 21.8.2M21 12.7c-.3 2.4-.1 5.4.2 7.4M5.2 23c5.9-.3 15.4-.2 21.6.2M12.8 19.7c-.3 2.5-.1 5.3.2 7.2" stroke-width="2"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <div class="connection-bar" id="connection-bar" hidden role="status">Offline. Your practice still works.</div>
+
+  <main id="main">
+    <section id="today-view" class="view" aria-labelledby="today-heading">
+      <h1 id="today-heading" class="visually-hidden">Today's 15:60 practice</h1>
+
+      <ol class="stage-track" aria-label="Practice stages">
+        <li class="current" data-progress="prompt"><span>1</span><b>prompt</b></li>
+        <li data-progress="research"><span>2</span><b>15 min</b></li>
+        <li data-progress="present"><span>3</span><b>60 sec</b></li>
+        <li data-progress="review"><span>4</span><b>done</b></li>
+      </ol>
+
+      <section class="stage prompt-stage" id="prompt-stage" aria-labelledby="prompt-label">
+        <p class="eyebrow" id="today-date">Today</p>
+        <div class="topic-lockup">
+          <svg class="topic-doodle" viewBox="0 0 88 88" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M31 50.4c-6.2-4.8-9.1-11-8.4-18.2C23.6 21.4 32 14 43 14c11.5 0 20.4 7.6 20.8 18.3.3 7.2-2.9 13.2-9.3 18.3-2.7 2.2-3.8 4.4-4.2 7.3-4.2 1.2-10.3 1-14.3-.1-.2-2.8-1.7-5.3-5-7.4Z" stroke-width="1.8"/>
+            <path d="M35.7 63c4.2 1.3 10.1 1.4 14.6.1M37.8 68c3.5 1 7.2 1.1 10.6.1M42.7 72.4c1.4.3 2.5.3 3.7 0M39 49.8c-.5-5.3-1.8-10-4.7-14.2 4.3 1.7 7.2 1.4 9.8-1.1 2.1 2.5 5.1 3 8.9 1.2-2.5 4.3-3.9 9-4.1 14.1" stroke-width="1.55"/>
+          </svg>
+          <h2 id="prompt-label"><span class="visually-hidden">Today's topic: </span><span id="topic-text">Loading today’s topic…</span></h2>
+        </div>
+        <button class="dice-button" id="another-topic" type="button" aria-describedby="rolls-left">
+          <svg class="doodle-icon dice-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14.9 16c0 .7.6 1.4 1.4 1.4.7 0 1.2-.4 1.1-1-.1-.8-.6-1.3-1.3-1.3-.7 0-1.2.5-1.2.9ZM8.9 10.8c0 .7.6 1.2 1.4 1.2.7 0 1.2-.4 1.1-1.1-.1-.8-.6-1.2-1.3-1.2-.7 0-1.2.5-1.2 1.1ZM20 11.4c0 .7.5 1.1 1.1 1.1.7 0 1.1-.4 1-1-.1-.7-.5-1.2-1-1.2-.7 0-1.1.5-1.1 1.1ZM9.9 20.2c0 .8.5 1.4 1.2 1.4.8 0 1.2-.5 1.2-1.1 0-.8-.5-1.5-1.2-1.5-.7 0-1.2.6-1.2 1.2ZM20.4 21.7c0 .6.5.9 1.2.9.6 0 1-.5 1-1.1 0-.6-.4-1-1-1-.7.1-1.2.6-1.2 1.2Z"/>
+            <path d="M8.8 5.4c4.1 0 10.7.3 15.8 1.3 1.4.3 2 1.4 2.3 3.3.6 4.3.8 9.4-.3 13.5-.4 1.5-1.8 2.5-3.8 2.7-4 .3-9.3.5-13.3.4-2.1-.1-3.5-1.4-4-2.9-.7-4.2-.6-10.8-.4-15.5.1-1.7 1.7-2.7 3.7-2.8Z"/>
+          </svg>
+          <span>Roll topic</span>
+          <small id="rolls-left">3 rolls left</small>
+        </button>
+
+        <button class="primary-button large" id="start-research" type="button">Start 15 minutes</button>
+
+      </section>
+
+      <section class="stage research-stage" id="research-stage" aria-labelledby="research-heading" hidden>
+        <h2 class="visually-hidden" id="research-heading">Research timer</h2>
+        <p class="stage-topic" data-current-topic></p>
+        <div class="research-timer-wrap">
+          <div class="timer-dial research-timer-dial" id="research-dial" style="--progress:0" role="timer" aria-label="Research time remaining"><strong id="research-time">15:00</strong><span>left</span></div>
+        </div>
+        <p class="visually-hidden" id="research-warning" role="status" aria-live="polite"></p>
+        <div class="stage-footer">
+          <button class="quiet-button" id="cancel-research" type="button">Start over</button>
+          <button class="primary-button" id="finish-research" type="button">Ready for 60 seconds</button>
+        </div>
+      </section>
+
+      <section class="stage" id="presentation-stage" aria-labelledby="presentation-heading" hidden>
+        <div class="stage-header">
+          <div><p class="eyebrow">Present</p><h2 id="presentation-heading">One clear minute.</h2></div>
+          <div class="timer-dial" id="presentation-dial" style="--progress:0" role="timer" aria-label="Presentation time remaining"><strong id="presentation-time">1:00</strong><span>left</span></div>
+        </div>
+        <p class="stage-topic" data-current-topic></p>
+
+        <div class="studio-grid">
+          <div class="audio-shell" id="audio-shell" aria-live="polite">
+            <div class="audio-visual" aria-hidden="true">
+              <svg class="mic-doodle" viewBox="0 0 90 116" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M38 13c-8.5 1-13 7.2-12.4 17.6l1.1 28.8c.5 10.2 6.7 16 16.3 15.8 9.4-.2 15.2-6.3 15-16.6l-.7-29.2C57 18.3 50.5 11.8 38 13Z" stroke-width="2.1"/><path d="M16.7 52.9c1 20.8 10.4 31.8 27.3 31.3 17.1-.5 25.7-11.3 24.7-32.1M44 84.2l.4 14.7M29.2 102.4c9.8-2 21.7-2.1 31.4-.3M33 32.5c5.1-.7 11.6-.7 17.2-.1M33.5 42.9c5.2-.7 11.4-.7 16.8-.1" stroke-width="1.8"/></svg>
+              <div class="audio-bars" id="audio-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="audio-state"><strong id="audio-state-title">Ready when you are</strong><p id="audio-state-copy">Record here or attach audio later.</p></div>
+            <div class="recording-badge" id="recording-badge" hidden><i></i> rec</div>
+            <div class="ten-second-badge" id="ten-second-badge" hidden>10 sec</div>
+          </div>
+          <div class="studio-controls" id="studio-controls">
+            <p class="permission-note" id="media-status">Audio stays on this device.</p>
+            <button class="primary-button large full" id="start-presentation" type="button">Record 60 seconds</button>
+          </div>
+        </div>
+        <div class="stage-footer present-only" id="present-actions" hidden>
+          <button class="quiet-button" id="stop-presentation" type="button">Finish early</button>
+        </div>
+      </section>
+
+      <section class="stage" id="review-stage" aria-labelledby="review-heading" hidden>
+        <div class="stage-header review-header">
+          <div><p class="eyebrow">Review</p><h2 id="review-heading">Nice minute.</h2></div>
+          <svg class="check-doodle" viewBox="0 0 76 76" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 38c7 7.5 13.4 13.9 20.2 21C42.5 43.1 53.8 29.4 67 16"/><path d="M8.5 34.5c6.8 7.3 14.1 14.7 20.8 21.9" opacity=".45"/></svg>
+        </div>
+        <p class="stage-topic" data-current-topic></p>
+
+        <div class="review-grid">
+          <div class="playback-shell" id="playback-shell">
+            <audio id="review-audio" preload="metadata" hidden></audio>
+            <div class="doodle-player" id="review-player" role="group" aria-label="Audio playback" hidden>
+              <button class="player-button" id="playback-toggle" type="button" aria-label="Play audio">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path class="player-play-icon" d="M11.5 7.8c5.1 2.6 9.5 5.4 13.1 8.2-4.1 3.2-8.7 6.1-13.2 8.3.4-5.6.5-11.3.1-16.5Z"/>
+                  <g class="player-pause-icon"><path d="M11.5 8.7c.3 4.8.3 9.7 0 14.6M20.4 8.4c-.2 5.1-.2 10.1.1 15.1"/></g>
+                </svg>
+              </button>
+              <div class="player-timeline">
+                <label class="visually-hidden" for="playback-position">Audio position</label>
+                <input class="playback-position" id="playback-position" type="range" min="0" max="0" step="0.1" value="0">
+                <output id="playback-time" for="playback-position">0:00 / 0:00</output>
+              </div>
+            </div>
+            <div class="playback-empty" id="playback-empty">
+              <svg class="doodle-icon large-doodle" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 5.2c-4.4 0-7.1 2.7-7 7.5l.3 6.3c.2 4.5 2.7 7 6.8 6.9 4.2-.1 6.6-2.8 6.5-7.4l-.2-6.2c-.1-4.7-2.6-7.2-6.4-7.1ZM5.4 17.2c.5 7.6 4.2 11.2 10.9 11 6.4-.2 10.1-3.8 10.3-11.1"/></svg>
+              <strong>No audio</strong><p>Attach a take if you recorded elsewhere.</p>
+            </div>
+          </div>
+          <input id="audio-file" type="file" accept="audio/*" hidden>
+          <button class="secondary-button full attach-button" id="attach-audio" type="button">Attach audio</button>
+
+          <div class="reflection-fields">
+            <fieldset class="self-rating" id="self-rating">
+              <legend>Self-rating</legend>
+              <div class="rating-options">
+                <label><input type="radio" name="self-rating" value="1"><span>1</span></label>
+                <label><input type="radio" name="self-rating" value="2"><span>2</span></label>
+                <label><input type="radio" name="self-rating" value="3"><span>3</span></label>
+                <label><input type="radio" name="self-rating" value="4"><span>4</span></label>
+                <label><input type="radio" name="self-rating" value="5"><span>5</span></label>
+              </div>
+              <div class="rating-scale" aria-hidden="true"><span>rough</span><span>clear</span></div>
+            </fieldset>
+            <label class="future-note" for="future-notes"><span>Note for next time</span><textarea id="future-notes" rows="3" maxlength="5000" placeholder="One thing to try…"></textarea></label>
+          </div>
+        </div>
+
+        <p class="local-save-status" id="local-save-status" role="status" data-state="saving">
+          <svg class="save-doodle" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6.5 14.4 5 5.1L22 8.8"/><path d="M4.8 6.3c5.1-1.2 13.2-1.1 18.3.3 1.2 5.2 1 11.8-.4 16.4-4.9 1.1-12.6 1.2-17.6-.2-1.1-4.8-1.2-11.4-.3-16.5Z" opacity=".42"/></svg>
+          <span>Saving on this device…</span>
+        </p>
+
+        <details class="export-card">
+          <summary><svg class="summary-doodle" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5.8 5.4c2.4 2.2 5.2 4.7 7.6 6.8M13.6 12.2c-2.4 2.1-4.9 4.4-7.3 6.3"/></svg>Keep a copy</summary>
+          <div class="export-actions" aria-labelledby="export-heading">
+            <h3 class="visually-hidden" id="export-heading">Download this take</h3>
+            <button class="secondary-button" id="download-audio" type="button">Download audio</button>
+            <button class="secondary-button" id="download-json" type="button">Download review data</button>
+          </div>
+        </details>
+
+        <div class="stage-footer">
+          <button class="quiet-button" id="discard-session" type="button">Delete this take</button>
+          <button class="primary-button" id="done-session" type="button">Done</button>
+        </div>
+      </section>
+    </section>
+
+    <section id="streaks-view" class="view streaks-view" aria-labelledby="streaks-heading" hidden>
+      <div class="streaks-header">
+        <div><p class="eyebrow">Keep showing up</p><h1 id="streaks-heading">Streaks</h1></div>
+        <svg class="calendar-doodle" viewBox="0 0 116 104" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 24c18-2.4 55.2-1.5 79.8 1.1 2.4 18.8 3.2 43.7.3 65.2-24.1-2-55.8-2.2-79.1-.4-2.4-21.1-2.4-46.5-1-65.9Z" stroke-width="1.8"/><path d="M17.2 39c22-1 58.3-.3 80.1 1.1M35.5 16c-.4 6.3-.2 13 .3 18.1M78.3 16.8c-.4 5.9-.3 12.2.2 17.4" stroke-width="1.6"/><path d="m33 53 8 8m.4-8.6-8.9 9.1M55 53.4l8 8m.3-8.7-8.6 9M76 68.5l8 8m.5-8.8-9 9.4" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="streak-summary" aria-label="Streak summary">
+        <div><strong id="current-streak">0</strong><span>current</span></div>
+        <div><strong id="longest-streak">0</strong><span>best</span></div>
+      </div>
+      <div class="calendar-frame">
+        <div class="streak-calendar" id="streak-calendar" role="region" tabindex="0" aria-label="Practice calendar"></div>
+      </div>
+      <div class="streak-empty" id="streak-empty">
+        <p>One minute starts a streak.</p>
+        <button class="primary-button" type="button" data-nav="today">Practice today</button>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Local. Private. Yours.</span></footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-heading">
+    <form method="dialog" class="dialog-shell">
+      <header class="dialog-header">
+        <h2 id="settings-heading">Settings</h2>
+        <button class="icon-button" value="close" aria-label="Close settings">
+          <svg class="doodle-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 7.5c5.5 5.9 11.8 11.8 18.2 17.3M24.7 7.2C19 13.3 13.4 19.1 7.1 25"/></svg>
+        </button>
+      </header>
+
+      <div class="settings-stack">
+        <section class="setting-section cues-setting" aria-labelledby="cues-heading">
+          <h3 id="cues-heading">Timer cues</h3>
+          <label class="toggle-row"><span>Sound</span><input type="checkbox" id="sound-enabled" checked></label>
+          <label class="toggle-row"><span>Haptics<small id="haptics-note">When supported</small></span><input type="checkbox" id="haptics-enabled" checked></label>
+        </section>
+
+        <details class="setting-section">
+          <summary id="daily-heading"><svg class="summary-doodle" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5.8 5.4c2.4 2.2 5.2 4.7 7.6 6.8M13.6 12.2c-2.4 2.1-4.9 4.4-7.3 6.3"/></svg>Daily reminder</summary>
+          <div class="setting-body">
+            <div class="setting-row"><label for="reminder-time">Time</label><input type="time" id="reminder-time" value="09:00"></div>
+            <div class="button-row">
+              <button type="button" class="primary-button" id="enable-reminders">Enable</button>
+              <button type="button" class="secondary-button" id="disable-reminders">Turn off</button>
+              <button type="button" class="secondary-button" id="download-calendar">Get calendar</button>
+            </div>
+            <p class="field-hint" id="notification-status">Calendar reminders work when the app is closed.</p>
+          </div>
+        </details>
+
+        <details class="setting-section">
+          <summary id="data-heading"><svg class="summary-doodle" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5.8 5.4c2.4 2.2 5.2 4.7 7.6 6.8M13.6 12.2c-2.4 2.1-4.9 4.4-7.3 6.3"/></svg>Local saves</summary>
+          <div class="setting-body">
+            <p class="setting-lede" id="storage-summary">Recordings save automatically in this browser.</p>
+            <button type="button" class="secondary-button" id="persist-storage">Protect local saves</button>
+            <button type="button" class="secondary-button" id="export-history">Export all history</button>
+            <p class="field-hint">They do not sync. Clearing site data can erase them, so download anything you want to keep permanently.</p>
+          </div>
+        </details>
+
+        <details class="setting-section" id="install-setting" hidden>
+          <summary><svg class="summary-doodle" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5.8 5.4c2.4 2.2 5.2 4.7 7.6 6.8M13.6 12.2c-2.4 2.1-4.9 4.4-7.3 6.3"/></svg>Install app</summary>
+          <div class="setting-body">
+            <p class="setting-lede">Keep 15:60 handy and available offline.</p>
+            <button type="button" class="primary-button" id="install-app">Install 15:60</button>
+          </div>
+        </details>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Compatibility markers let the last two network-first workers accept
+       this update page before the new atomic shell takes control:
+       src="app.js" data-app-shell="20260805j" -->
+  <script type="module">
+    const shellStamp = '20260805t';
+
+    async function activateCurrentShell() {
+      if (!('serviceWorker' in navigator)) return;
+      const currentControlsPage = () => {
+        const script = navigator.serviceWorker.controller?.scriptURL;
+        if (!script) return false;
+        try { return new URL(script).searchParams.get('shell') === shellStamp; }
+        catch { return false; }
+      };
+
+      if (currentControlsPage()) return;
+
+      const startedControlled = Boolean(navigator.serviceWorker.controller);
+      const workerUrl = `./sw.js?shell=${shellStamp}`;
+      let registration;
+      try {
+        registration = await navigator.serviceWorker.register(workerUrl, { updateViaCache: 'none' });
+        registration?.update?.().catch(() => {});
+      } catch (error) {
+        if (startedControlled) throw error;
+        return;
+      }
+
+      // IDE previews and privacy-hardened WebViews can expose the service-worker
+      // API while declining registration. The network page remains safe to run
+      // as long as no incompatible worker already controls it.
+      if (!registration) {
+        if (startedControlled) throw new Error('The complete updated offline shell could not take control.');
+        return;
+      }
+
+      const deadline = Date.now() + 6000;
+      while (!currentControlsPage() && Date.now() < deadline) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      if (!currentControlsPage() && navigator.serviceWorker.controller) {
+        throw new Error('The complete updated offline shell could not take control.');
+      }
+    }
+
+    function refreshStylesheet() {
+      const stylesheet = document.querySelector('link[rel="stylesheet"][href^="app.css"]');
+      if (stylesheet) {
+        const refreshed = stylesheet.cloneNode();
+        refreshed.href = `app.css?shell=${shellStamp}`;
+        stylesheet.replaceWith(refreshed);
+      }
+    }
+
+    try {
+      await activateCurrentShell();
+      refreshStylesheet();
+      await import(`./app.js?shell=${shellStamp}`);
+    } catch (error) {
+      console.error('15:60 failed to start', error);
+      const topic = document.querySelector('#topic-text');
+      const roll = document.querySelector('#another-topic');
+      const start = document.querySelector('#start-research');
+      document.documentElement.dataset.appReady = 'failed';
+      if (topic) topic.textContent = 'Finish updating 15:60.';
+      if (roll) roll.hidden = true;
+      if (start) {
+        start.textContent = 'Retry update';
+        start.addEventListener('click', () => location.reload(), { once: true });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+node_modules/
+npm-debug.log*
+
+.DS_Store
+.env
+.env.*
+!.env.example
+
+playwright-report/
+test-results/
+coverage/
+clear60-qa/
+
+# Local practice recordings and exports
+*.webm
+*.ogg
+*.m4a
+*.wav
+clear60-*.json
+clear60-history-*.tar

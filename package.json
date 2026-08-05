@@ -1,0 +1,25 @@
+{
+  "name": "15-60",
+  "version": "1.3.0",
+  "private": true,
+  "description": "Research one idea for 15 minutes, then say it clearly in 60 seconds.",
+  "license": "MIT",
+  "homepage": "https://kkonrad.com/15-60/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xkkonrad/15-60.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "npm --prefix tests test",
+    "test:browser": "npm --prefix tests run test:browser",
+    "test:update": "npm --prefix tests run test:update",
+    "test:adversarial": "npm --prefix tests run test:adversarial"
+  },
+  "devDependencies": {
+    "playwright": "1.61.1"
+  }
+}
