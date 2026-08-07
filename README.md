@@ -105,8 +105,22 @@ The JSON sidecar contract is versioned:
 The optional Codex review skill used by the maintainer is intentionally not
 part of this PWA or repository. Give any compatible local analysis tool a
 downloaded session JSON and adjacent audio file, or extract both from the
-history TAR. The app itself never downloads a speech model or sends a take to
-an evaluator.
+history TAR. The app itself never downloads a speech model, and it sends a
+take to an evaluator only through the explicit opt-in below.
+
+### Optional external review
+
+Settings → **External review** takes an evaluator URL and an access token;
+both are blank by default and the feature is invisible until a finished take
+has audio and both fields are set. Pressing **Send for review** uploads that
+one recording to the configured URL over HTTPS (`POST` with a bearer token,
+plus `topic`, `date`, and `duration` query parameters) and stores the HTML
+report from the response in a separate IndexedDB store beside the take —
+reopen the take to reach **Open review**. Nothing is ever sent automatically,
+no third-party endpoint ships with the app, and the report travels in the
+history TAR as `review.html` next to each session. The maintainer points this
+at a small self-hosted evaluator; any endpoint honoring the same contract
+works.
 
 ## Notifications without pretending
 
@@ -134,7 +148,8 @@ deliberately out of scope here.
   state, and the active-practice checkpoint.
 - The PWA sends no app analytics and has no application backend.
 - Audio recording stays local. The app contains no speech-recognition or
-  transcription integration.
+  transcription integration. The one way audio leaves the device is the
+  opt-in External review send described above, per explicit button press.
 - Browser storage belongs to the exact origin: different hosts or ports have
   separate saves. Private browsing, clearing site data, or storage-pressure
   eviction can remove it.

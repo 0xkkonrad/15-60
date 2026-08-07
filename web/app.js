@@ -18,11 +18,13 @@ import {
 } from './core.js';
 import { createTarArchive } from './archive.js';
 import {
+  getReport,
   getSession,
   listSessions,
   listSessionsWithMedia,
   removeSession,
   requestPersistentStorage,
+  saveReport,
   saveSession,
   storageEstimate,
 } from './storage.js';
@@ -263,6 +265,94 @@ function soundEnabled() {
 
 function hapticsEnabled() {
   try { return localStorage.getItem('clear60/haptics/v1') !== 'off'; } catch { return true; }
+}
+
+function evaluatorConfig() {
+  let url = '';
+  let token = '';
+  try {
+    url = (localStorage.getItem('clear60/evaluator-url/v1') || '').trim();
+    token = (localStorage.getItem('clear60/evaluator-token/v1') || '').trim();
+  } catch { return null; }
+  if (!url || !token) return null;
+  try {
+    const parsed = new URL(url);
+    const localhost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1';
+    if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && localhost)) return null;
+    return { url: parsed.href, token };
+  } catch {
+    return null;
+  }
+}
+
+async function updateEvaluatorUi() {
+  const configured = Boolean(evaluatorConfig());
+  const sendable = configured && session?.completedAt && audioBlob instanceof Blob;
+  const forSession = session?.id;
+  const report = forSession && configured ? await getReport(forSession) : null;
+  if (session?.id !== forSession) return; // the take changed while we looked
+  $('#evaluator-actions').hidden = !(sendable || report);
+  $('#send-review').hidden = !sendable;
+  $('#send-review').textContent = report ? 'Send again' : 'Send for review';
+  $('#open-review').hidden = !report;
+}
+
+async function sendForReview() {
+  const config = evaluatorConfig();
+  if (!config || !session || !(audioBlob instanceof Blob)) return;
+  const button = $('#send-review');
+  if (button.disabled) return;
+  button.disabled = true;
+  button.setAttribute('aria-busy', 'true');
+  const restoreLabel = button.textContent;
+  button.textContent = 'Reviewing…';
+  try {
+    const target = new URL(config.url);
+    target.searchParams.set('topic', slugify(session.topic));
+    target.searchParams.set('date', session.topicDate);
+    const seconds = session.timing.recordingDurationSeconds || session.timing.presentationElapsedSeconds;
+    if (seconds > 0) target.searchParams.set('duration', String(Math.round(seconds * 10) / 10));
+    const response = await fetch(target, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'Content-Type': audioBlob.type || 'audio/webm',
+      },
+      body: audioBlob,
+      signal: AbortSignal.timeout(180_000),
+    });
+    if (!response.ok) {
+      const detail = (await response.text()).trim().slice(0, 120);
+      showToast(`The evaluator said no (${response.status}${detail ? `: ${detail}` : ''}).`, 6000);
+      return;
+    }
+    const html = (await response.text()).slice(0, 512_000);
+    await saveReport(session.id, html);
+    showToast('Review saved with this take.');
+  } catch (error) {
+    showToast(error?.name === 'TimeoutError'
+      ? 'The evaluator took longer than three minutes. Try again.'
+      : 'The evaluator could not be reached. The take is unchanged.', 6000);
+  } finally {
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
+    button.textContent = restoreLabel;
+    updateEvaluatorUi();
+  }
+}
+
+async function openExternalReview() {
+  if (!session) return;
+  const report = await getReport(session.id);
+  if (!report) {
+    showToast('No saved review for this take.');
+    updateEvaluatorUi();
+    return;
+  }
+  const url = URL.createObjectURL(new Blob([report.html], { type: 'text/html' }));
+  const opened = window.open(url, '_blank');
+  if (!opened) showToast('The browser blocked the review tab. Allow pop-ups for 15:60.');
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
 function playHaptic(kind) {
@@ -702,6 +792,7 @@ function renderReview() {
   });
   $('#future-notes').value = session.futureNotes || '';
   setPlayback(audioBlob);
+  updateEvaluatorUi();
 }
 
 function syncSessionFromReview() {
@@ -781,7 +872,10 @@ async function exportEntireHistory() {
         entries.push({ name: audioFile, data: row.mediaBlob });
         audioCount++;
       }
-      manifestSessions.push({ id: storedSession.id, metadataFile, audioFile });
+      const report = await getReport(storedSession.id);
+      const reportFile = report ? `${folder}/review.html` : null;
+      if (report) entries.push({ name: reportFile, data: report.html });
+      manifestSessions.push({ id: storedSession.id, metadataFile, audioFile, reportFile });
     }
 
     const manifest = {
@@ -1075,6 +1169,10 @@ function syncReminderUi() {
 function syncSettingsUi() {
   syncReminderUi();
   $('#sound-enabled').checked = soundEnabled();
+  try {
+    $('#evaluator-url').value = localStorage.getItem('clear60/evaluator-url/v1') || '';
+    $('#evaluator-token').value = localStorage.getItem('clear60/evaluator-token/v1') || '';
+  } catch { /* storage unavailable; the feature simply stays off */ }
   const hapticsSupported = typeof navigator.vibrate === 'function';
   $('#haptics-enabled').checked = hapticsSupported && hapticsEnabled();
   $('#haptics-enabled').disabled = !hapticsSupported;
@@ -1119,7 +1217,7 @@ function updateConnection() {
 async function registerWorker() {
   if (!('serviceWorker' in navigator)) return;
   try {
-    const registration = await navigator.serviceWorker.register('./sw.js?shell=20260805t', { updateViaCache: 'none' });
+    const registration = await navigator.serviceWorker.register('./sw.js?shell=20260807a', { updateViaCache: 'none' });
     if (!registration) return;
     registration.addEventListener('updatefound', () => {
       const worker = registration.installing;
@@ -1226,6 +1324,16 @@ function bindEvents() {
     try { localStorage.setItem('clear60/haptics/v1', event.target.checked ? 'on' : 'off'); } catch { /* preference only */ }
     if (event.target.checked) playHaptic('start');
   });
+  $('#evaluator-url').addEventListener('change', (event) => {
+    try { localStorage.setItem('clear60/evaluator-url/v1', event.target.value.trim()); } catch { /* preference only */ }
+    updateEvaluatorUi();
+  });
+  $('#evaluator-token').addEventListener('change', (event) => {
+    try { localStorage.setItem('clear60/evaluator-token/v1', event.target.value.trim()); } catch { /* preference only */ }
+    updateEvaluatorUi();
+  });
+  $('#send-review').addEventListener('click', sendForReview);
+  $('#open-review').addEventListener('click', openExternalReview);
   $('#enable-reminders').addEventListener('click', async () => {
     const result = await enableReminders($('#reminder-time').value);
     syncSettingsUi();

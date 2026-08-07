@@ -1,6 +1,6 @@
 /* Bump the final stamp whenever a deployed shell file changes. A new cache is
  * populated completely before activate removes the previous complete shell. */
-const CACHE = 'clear60-shell-v1-20260805t';
+const CACHE = 'clear60-shell-v1-20260807a';
 const SHELL = [
   './',
   'index.html',

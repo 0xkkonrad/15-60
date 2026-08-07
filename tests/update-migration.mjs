@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const playwright = await import('playwright');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'web');
-const CURRENT_SHELL = '20260805t';
+const CURRENT_SHELL = '20260807a';
 const CURRENT_CACHE = `clear60-shell-v1-${CURRENT_SHELL}`;
 const LEGACY_SHELL = 'migration-legacy';
 const LEGACY_CACHE = `clear60-shell-v1-${LEGACY_SHELL}`;

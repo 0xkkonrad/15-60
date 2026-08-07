@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-clear60-app data-app-shell="20260805t">
+<html lang="en" data-clear60-app data-app-shell="20260807a">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -182,6 +182,11 @@
           </div>
         </details>
 
+        <div class="evaluator-actions" id="evaluator-actions" hidden>
+          <button class="secondary-button" id="send-review" type="button">Send for review</button>
+          <button class="secondary-button" id="open-review" type="button" hidden>Open review</button>
+        </div>
+
         <div class="stage-footer">
           <button class="quiet-button" id="discard-session" type="button">Delete this take</button>
           <button class="primary-button" id="done-session" type="button">Done</button>
@@ -253,6 +258,16 @@
           </div>
         </details>
 
+        <details class="setting-section">
+          <summary id="evaluator-heading"><svg class="summary-doodle" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5.8 5.4c2.4 2.2 5.2 4.7 7.6 6.8M13.6 12.2c-2.4 2.1-4.9 4.4-7.3 6.3"/></svg>External review</summary>
+          <div class="setting-body">
+            <p class="setting-lede">Off unless both fields are filled in. Nothing is ever sent automatically.</p>
+            <label class="setting-field" for="evaluator-url"><span>Evaluator URL</span><input type="url" id="evaluator-url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…/review"></label>
+            <label class="setting-field" for="evaluator-token"><span>Access token</span><input type="password" id="evaluator-token" autocomplete="off" spellcheck="false"></label>
+            <p class="field-hint">“Send for review” on a finished take uploads that one recording to this URL over HTTPS and saves the returned report on this device, beside the take.</p>
+          </div>
+        </details>
+
         <details class="setting-section" id="install-setting" hidden>
           <summary><svg class="summary-doodle" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5.8 5.4c2.4 2.2 5.2 4.7 7.6 6.8M13.6 12.2c-2.4 2.1-4.9 4.4-7.3 6.3"/></svg>Install app</summary>
           <div class="setting-body">
@@ -268,7 +283,7 @@
        this update page before the new atomic shell takes control:
        src="app.js" data-app-shell="20260805j" -->
   <script type="module">
-    const shellStamp = '20260805t';
+    const shellStamp = '20260807a';
 
     async function activateCurrentShell() {
       if (!('serviceWorker' in navigator)) return;

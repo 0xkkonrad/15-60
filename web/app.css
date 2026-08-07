@@ -728,3 +728,9 @@ dialog::backdrop { background: rgba(48, 48, 52, .55); }
     forced-color-adjust: none;
   }
 }
+
+.evaluator-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.evaluator-actions .secondary-button { min-height: 44px; padding: 8px 12px; }
+.setting-field { display: block; margin-bottom: 12px; }
+.setting-field span { display: block; font-size: .8rem; margin-bottom: 4px; }
+.setting-field input { width: 100%; }

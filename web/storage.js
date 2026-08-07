@@ -1,9 +1,10 @@
 import { normalizeSession } from './core.js';
 
 const DB_NAME = 'clear60';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const SESSIONS = 'sessions';
 const MEDIA = 'media';
+const REPORTS = 'reports';
 const FALLBACK_KEY = 'clear60/sessions-fallback/v1';
 
 let opening;
@@ -35,6 +36,7 @@ function openDatabase() {
         store.createIndex('createdAt', 'createdAt');
       }
       if (!db.objectStoreNames.contains(MEDIA)) db.createObjectStore(MEDIA, { keyPath: 'id' });
+      if (!db.objectStoreNames.contains(REPORTS)) db.createObjectStore(REPORTS, { keyPath: 'id' });
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => {
@@ -145,12 +147,33 @@ export async function listSessionsWithMedia() {
 export async function removeSession(id) {
   try {
     const db = await openDatabase();
-    const tx = db.transaction([SESSIONS, MEDIA], 'readwrite');
+    const tx = db.transaction([SESSIONS, MEDIA, REPORTS], 'readwrite');
     tx.objectStore(SESSIONS).delete(id);
     tx.objectStore(MEDIA).delete(id);
+    tx.objectStore(REPORTS).delete(id);
     await transactionDone(tx);
   } catch { /* still remove any metadata-only fallback below */ }
   fallbackRemove(id);
+}
+
+/* External-review reports are HTML documents returned by a user-configured
+ * evaluator. They live beside the take, never inside session metadata, so
+ * Streaks and exports that only need metadata stay small. */
+export async function saveReport(id, html) {
+  const db = await openDatabase();
+  const tx = db.transaction(REPORTS, 'readwrite');
+  tx.objectStore(REPORTS).put({ id, html: String(html), savedAt: new Date().toISOString() });
+  await transactionDone(tx);
+}
+
+export async function getReport(id) {
+  try {
+    const db = await openDatabase();
+    const record = await request(db.transaction(REPORTS).objectStore(REPORTS).get(id));
+    return record && typeof record.html === 'string' ? record : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function storageEstimate() {
